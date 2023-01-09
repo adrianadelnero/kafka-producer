@@ -1,20 +1,26 @@
-package config;
+package com.delnero.kafkaproducer.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Map;
 
 @org.springframework.context.annotation.Configuration
+@EnableScheduling
 public class KafkaConfiguration {
 
     private final KafkaProperties kafkaProperties;
+
+    @Value("topic.name")
+    String topicName;
 
     @Autowired
     public KafkaConfiguration(KafkaProperties kafkaProperties) {
@@ -35,7 +41,7 @@ public class KafkaConfiguration {
     @Bean
     public NewTopic topic() {
         return TopicBuilder
-                .name("topic.pizza.order")
+                .name(topicName)
                 .partitions(1)
                 .replicas(1)
                 .build();
